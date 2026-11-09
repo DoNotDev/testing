@@ -12,6 +12,8 @@
  * @author AMBROISE PARK Consulting
  */
 
+import { generatePayload, getFileFields } from '../common/payloadGenerator';
+import { reportImagePipeline } from '../common/reporter';
 import type {
   TestImagePipelineOptions,
   TestImagePipelineResult,
@@ -19,8 +21,6 @@ import type {
   TestStep,
   PipelinePicture,
 } from '../common/types';
-import { reportImagePipeline } from '../common/reporter';
-import { generatePayload, getFileFields } from '../common/payloadGenerator';
 
 // ============================================================================
 // Step runner

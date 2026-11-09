@@ -7,12 +7,12 @@
  * @author AMBROISE PARK Consulting
  */
 
+import { reportStorage } from '../common/reporter';
 import type {
   TestStorageOptions,
   TestStorageResult,
   TestStepResult,
 } from '../common/types';
-import { reportStorage } from '../common/reporter';
 
 // ============================================================================
 // Test blob generation

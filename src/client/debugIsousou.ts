@@ -15,11 +15,11 @@
 
 import { getProvider } from '@donotdev/core';
 
-import type { ImagePipelineFns, CrudPipelineFns } from '../common/types';
-import { testStorage } from './testStorage';
 import { testEntity } from './testEntity';
 import { testImagePipeline } from './testImagePipeline';
 import { testImageUpload } from './testImageUpload';
+import { testStorage } from './testStorage';
+import type { ImagePipelineFns, CrudPipelineFns } from '../common/types';
 
 // ============================================================================
 // Options

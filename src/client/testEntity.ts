@@ -9,19 +9,19 @@
 
 import { EDITABLE, type Entity, type EntityField } from '@donotdev/core';
 
-import type {
-  TestEntityOptions,
-  TestEntityResult,
-  TestStepResult,
-  TestStep,
-} from '../common/types';
+import { createTestImageBlob, createTestFileBlob } from './testStorage';
 import {
   generatePayload,
   getFileFields,
   isMultiFileField,
 } from '../common/payloadGenerator';
 import { reportEntity } from '../common/reporter';
-import { createTestImageBlob, createTestFileBlob } from './testStorage';
+import type {
+  TestEntityOptions,
+  TestEntityResult,
+  TestStepResult,
+  TestStep,
+} from '../common/types';
 
 // ============================================================================
 // Step runner

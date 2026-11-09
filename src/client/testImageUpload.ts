@@ -11,6 +11,7 @@
  * @author AMBROISE PARK Consulting
  */
 
+import { reportImageUpload } from '../common/reporter';
 import type {
   TestImageUploadOptions,
   TestImageUploadResult,
@@ -19,7 +20,6 @@ import type {
   PipelinePicture,
   ProcessedImageResult,
 } from '../common/types';
-import { reportImageUpload } from '../common/reporter';
 
 // ============================================================================
 // Test image generation
