@@ -51,6 +51,7 @@ export interface DebugIsousouOptions {
  * Each layer isolated so you know exactly where it breaks.
  */
 export async function debugIsousou(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- why: exported signature; narrowing it is a breaking change for importers (deferred to a major, any-audit 2026-11-11)
   apartmentEntity: any,
   options: DebugIsousouOptions = {}
 ): Promise<void> {

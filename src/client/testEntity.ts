@@ -67,8 +67,13 @@ async function uploadTestFiles(
   for (const field of fileFields) {
     const isImage = ['image', 'images', 'avatar'].includes(field.type);
     const isMulti = isMultiFileField(field);
+    const fieldSpecific = field.options?.fieldSpecific;
     const fieldStoragePath =
-      (field.options as any)?.fieldSpecific?.storagePath ?? storagePath;
+      (fieldSpecific &&
+      'storagePath' in fieldSpecific &&
+      typeof fieldSpecific.storagePath === 'string'
+        ? fieldSpecific.storagePath
+        : undefined) ?? storagePath;
 
     const stepName: TestStep = isImage ? 'upload-image' : 'upload-file';
 
@@ -238,12 +243,14 @@ export async function testEntity(
 
   if (!skip.includes('list')) {
     const listResult = await runStep('list', async () => {
-      const result = await crud.query(collection, { limit: 5 });
+      const result = await crud.query<{ id: string }>(collection, {
+        limit: 5,
+      });
       console.log(
         `  [list] items=${result.items.length}, hasMore=${result.hasMore}`
       );
       if (createdId) {
-        const found = result.items.some((item: any) => item.id === createdId);
+        const found = result.items.some((item) => item.id === createdId);
         if (!found) {
           console.log(
             `  [list] WARNING: created entity not found in list results`

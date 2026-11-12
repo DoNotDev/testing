@@ -17,6 +17,7 @@ import { testEntity } from './testEntity';
 /**
  * Debug c4all: test car entity CRUD via FunctionsAdapter
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- why: exported signature; narrowing it is a breaking change for importers (deferred to a major, any-audit 2026-11-11)
 export async function debugC4all(carEntity: any): Promise<void> {
   const crud = getProvider('crud');
   const callable = getProvider('callable');

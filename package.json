@@ -1,6 +1,6 @@
 {
   "name": "@donotdev/testing",
-  "version": "0.2.0",
+  "version": "0.2.3",
   "private": false,
   "type": "module",
   "license": "MIT",
@@ -23,7 +23,7 @@
   },
   "dependencies": {},
   "peerDependencies": {
-    "@donotdev/core": "^0.2.0"
+    "@donotdev/core": "^0.2.3"
   },
   "devDependencies": {
     "@donotdev/core": "workspace:*",
