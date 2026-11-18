@@ -39,7 +39,12 @@ export interface TestEntityOptions {
   payload?: Record<string, unknown>;
   /** Delete created entity after test (default: true) */
   cleanup?: boolean;
-  /** Role to test as (affects field visibility) — default: 'admin' */
+  /**
+   * Role the update step writes as: the updated field is one editable on edit for
+   * this role (`describeEntity(entity).fields[f].editableFor(role, 'edit')`).
+   * Default: `entity.access.update`, the most restrictive role that can update.
+   * A role below `entity.access.update` fails the update step.
+   */
   role?: 'guest' | 'user' | 'admin' | 'super';
   /** Skip specific steps */
   skip?: Array<'create' | 'get' | 'list' | 'listCard' | 'update' | 'delete'>;

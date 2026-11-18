@@ -102,7 +102,7 @@ export async function testImagePipeline(
   // ── Step 1: Generate payload ──────────────────────────────────────────
 
   const genResult = await runStep('generate-payload', async () => {
-    const generated = generatePayload(entity.fields, input);
+    const generated = generatePayload(entity, input);
 
     console.log(
       `\n  [generate-payload] OUT (${Object.keys(generated).length} fields):`
@@ -116,7 +116,7 @@ export async function testImagePipeline(
     }
 
     // Show file fields separately
-    const fileFields = getFileFields(entity.fields);
+    const fileFields = getFileFields(entity);
     if (fileFields.length > 0) {
       console.log(`\n  [generate-payload] File fields (${fileFields.length}):`);
       for (const f of fileFields) {
@@ -165,7 +165,7 @@ export async function testImagePipeline(
 
   // ── Step 3: Check image URLs are real ─────────────────────────────────
 
-  const fileFields = getFileFields(entity.fields);
+  const fileFields = getFileFields(entity);
   const imageFields = fileFields.filter((f) =>
     ['image', 'images', 'avatar'].includes(f.type)
   );

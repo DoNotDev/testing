@@ -7,7 +7,7 @@
  * @author AMBROISE PARK Consulting
  */
 
-import { EDITABLE, type Entity, type EntityField } from '@donotdev/core';
+import { describeEntity, hasRoleAccess, type Entity, type EntityField } from '@donotdev/core';
 
 import { createTestImageBlob, createTestFileBlob } from './testStorage';
 import {
@@ -16,6 +16,7 @@ import {
   isMultiFileField,
 } from '../common/payloadGenerator';
 import { reportEntity } from '../common/reporter';
+import { sampleValue } from '../common/sampleValues';
 import type {
   TestEntityOptions,
   TestEntityResult,
@@ -137,6 +138,10 @@ async function uploadTestFiles(
 /**
  * Run a full CRUD integration test on an entity.
  *
+ * The update step writes as `options.role` (default `entity.access.update`, the
+ * most restrictive role that can update): it updates a text field that role may
+ * edit, and fails when the role is below `entity.access.update`.
+ *
  * @example
  * ```ts
  * import { testEntity } from '@donotdev/testing';
@@ -158,6 +163,7 @@ export async function testEntity(
     skip = [],
     storagePath,
     signal,
+    role = entity.access.update,
   } = options;
   const { crud } = providers;
   const collection = entity.collection;
@@ -168,7 +174,7 @@ export async function testEntity(
   // ── Step 0: Generate payload ──────────────────────────────────────────
 
   const genResult = await runStep('generate-payload', async () => {
-    return generatePayload(entity.fields, overrides);
+    return generatePayload(entity, overrides);
   });
   steps.push(genResult);
 
@@ -187,7 +193,7 @@ export async function testEntity(
 
   // ── Step 0b: Upload test files (if storage provided + entity has file fields) ──
 
-  const fileFields = getFileFields(entity.fields);
+  const fileFields = getFileFields(entity);
   if (fileFields.length > 0 && providers.storage) {
     const { results: uploadResults, values: fileValues } =
       await uploadTestFiles(fileFields, providers.storage, storagePath, signal);
@@ -284,24 +290,42 @@ export async function testEntity(
 
   if (!skip.includes('update') && createdId) {
     const updateResult = await runStep('update', async () => {
-      // Find a simple text field to update
-      const textField = Object.values(entity.fields).find(
-        (f) =>
-          f.type === 'text' &&
-          f.editable !== false &&
-          f.editable !== EDITABLE.GENERATED &&
-          f.editable !== EDITABLE.COMPUTED &&
-          f.editable !== EDITABLE.CREATE_ONLY &&
-          f.visibility !== 'hidden' &&
-          f.visibility !== 'technical'
-      );
-      const updateData: Record<string, unknown> = textField
-        ? { [textField.name]: `updated_${Date.now().toString(36)}` }
-        : {};
+      if (!hasRoleAccess(role, entity.access.update)) {
+        throw new Error(
+          `role '${role}' cannot update ${entity.name} (access.update: '${entity.access.update}')`
+        );
+      }
+      // A text-kind field the user writes on edit (descriptor: write class
+      // `user`, editable on edit for `role`), with a fresh sample
+      const descriptor = describeEntity(entity);
+      const textEntry = Object.entries(entity.fields).find(([name]) => {
+        const d = descriptor.fields[name];
+        return (
+          !!d &&
+          name !== 'status' &&
+          d.write === 'user' &&
+          d.value.kind === 'text' &&
+          d.editableFor(role, 'edit')
+        );
+      });
+      const updateData: Record<string, unknown> = {};
+      if (textEntry) {
+        const [name, field] = textEntry;
+        updateData[name] = sampleValue(
+          {
+            entity: entity.name,
+            name,
+            label: field.label,
+            value: descriptor.fields[name]!.value,
+            validation: field.validation,
+          },
+          { index: 1, rand: () => 0.5 }
+        );
+      }
 
       if (Object.keys(updateData).length === 0) {
         console.log(
-          `  [update] no updatable text field found, skipping update data`
+          `  [update] no text field editable by '${role}', skipping update data`
         );
         return { skipped: true };
       }

@@ -1,6 +1,6 @@
 {
   "name": "@donotdev/testing",
-  "version": "0.2.3",
+  "version": "0.3.0",
   "private": false,
   "type": "module",
   "license": "MIT",
@@ -12,6 +12,11 @@
       "types": "./src/index.ts",
       "import": "./src/index.ts",
       "default": "./src/index.ts"
+    },
+    "./samples": {
+      "types": "./src/common/sampleValues.ts",
+      "import": "./src/common/sampleValues.ts",
+      "default": "./src/common/sampleValues.ts"
     }
   },
   "scripts": {
@@ -23,7 +28,7 @@
   },
   "dependencies": {},
   "peerDependencies": {
-    "@donotdev/core": "^0.2.3"
+    "@donotdev/core": "^0.3.0"
   },
   "devDependencies": {
     "@donotdev/core": "workspace:*",
